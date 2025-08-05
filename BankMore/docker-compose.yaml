@@ -1,0 +1,93 @@
+services:
+
+  conta-corrente-api:
+    build:
+      context: ./src/ContaCorrente/BankMore.ContaCorrente.API
+    ports:
+      - "5001:80"
+    depends_on:
+      - sqlite-conta
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+
+  transferencia-api:
+    build:
+      context: ./src/Transferencia/BankMore.Transferencia.API
+    ports:
+      - "5002:80"
+    depends_on:
+      - sqlite-transferencia
+      - conta-corrente-api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+
+  usuario-api:
+    build:
+      context: ./src/Usuario/BankMore.Usuario.API
+    ports:
+      - "5003:80"
+    depends_on:
+      - sqlite-usuario
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+
+  tarifa-api:
+    build:
+      context: ./src/Tarifa/BankMore.Tarifa.API
+    ports:
+      - "5004:80"
+    depends_on:
+      - kafka
+      - sqlite-tarifa
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+
+  kafka:
+    image: bitnami/kafka:latest
+    ports:
+      - "9092:9092"
+    environment:
+      - KAFKA_BROKER_ID=1
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
+      - KAFKA_LISTENERS=PLAINTEXT://:9092
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9092
+      - ALLOW_PLAINTEXT_LISTENER=yes
+    depends_on:
+      - zookeeper
+
+  zookeeper:
+    image: bitnami/zookeeper:latest
+    ports:
+      - "2181:2181"
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
+
+  sqlite-conta:
+    image: nouchka/sqlite3
+    volumes:
+      - conta-data:/data
+    command: tail -f /dev/null
+
+  sqlite-transferencia:
+    image: nouchka/sqlite3
+    volumes:
+      - transferencia-data:/data
+    command: tail -f /dev/null
+
+  sqlite-usuario:
+    image: nouchka/sqlite3
+    volumes:
+      - usuario-data:/data
+    command: tail -f /dev/null
+
+  sqlite-tarifa:
+    image: nouchka/sqlite3
+    volumes:
+      - tarifa-data:/data
+    command: tail -f /dev/null
+
+volumes:
+  conta-data:
+  transferencia-data:
+  usuario-data:
+  tarifa-data:
