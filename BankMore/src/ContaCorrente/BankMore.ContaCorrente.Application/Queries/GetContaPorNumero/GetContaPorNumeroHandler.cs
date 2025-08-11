@@ -17,8 +17,8 @@ public sealed class GetContaPorNumeroHandler : IRequestHandler<GetContaPorNumero
 
     public async Task<Result<ContaCorrenteDto>> Handle(GetContaPorNumeroQuery request, CancellationToken ct)
     {
-        if (request.Numero <= 0)
-            return Result<ContaCorrenteDto>.Fail("Número da conta deve ser maior que zero.");
+        if (string.IsNullOrEmpty(request.Numero))
+            return Result<ContaCorrenteDto>.Fail("Informe o número da conta.");
 
         var conta = await _contas.ObterPorNumeroAsync(request.Numero);
         if (conta is null)

@@ -22,7 +22,7 @@ public class ContaCorrenteController : ControllerBase
     [HttpGet("{numero:int}")]
     [ProducesResponseType(typeof(ContaCorrenteDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetByNumero([FromRoute] int numero, CancellationToken ct)
+    public async Task<IActionResult> GetByNumero([FromRoute] string numero, CancellationToken ct)
     {
         var result = await _mediator.Send(new GetContaPorNumeroQuery(numero), ct);
         return result.IsSuccess ? Ok(result.Value) : NotFound(new { error = result.Error });
