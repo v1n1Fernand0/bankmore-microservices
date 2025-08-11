@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace BankMore.Usuario.Infrastructure.Data.Migrations
+namespace BankMore.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(UsuarioDbContext))]
     [Migration("20250811102517_Initial")]
